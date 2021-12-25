@@ -1,3 +1,6 @@
+'''
+Файл с обработкой логики для всех страниц нашего приложения
+'''
 from app import app
 from flask import render_template, flash, redirect, url_for
 from app.forms import LoginForm
@@ -5,6 +8,9 @@ from app.forms import LoginForm
 @app.route('/')
 @app.route('/index')
 def index():
+    '''
+    Главная страница приложения со списком всех заявок
+    '''
     user = {'name': 'Ivan', 'surname': 'Ivanov'}
     applications = [
         {
@@ -24,6 +30,9 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    '''
+    Страница входа для участника по логину и паролю
+    '''
     form = LoginForm()
     if form.validate_on_submit():
         flash(f'Login requested for user {form.username.data}, remember_me={form.remember_me.data}')
