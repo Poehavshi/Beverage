@@ -1,3 +1,7 @@
+'''
+Инициализация пакета app,
+создание необходимых для нашего приложения объектов (Flask, SQLAlchemy)
+'''
 from flask import Flask
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
