@@ -12,7 +12,6 @@ from app import db
 
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
     '''
     Главная страница приложения со списком всех соревнований

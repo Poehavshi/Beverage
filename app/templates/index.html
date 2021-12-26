@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+        {% if current_user.is_anonymous %}
+        <h1>Здравствуй</h1>
+        {% else %}
         <h1>Здравствуй, {{ current_user.name }} {{current_user.surname}}!</h1>
-
+        {% endif %}
         <h2>Список соревнований:</h2>
         {% for competition in competitions %}
         <div>
