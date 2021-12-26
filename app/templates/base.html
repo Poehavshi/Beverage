@@ -13,6 +13,9 @@
             {% if not current_user.is_anonymous %}
             <a href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
             {% endif %}
+            {% if current_user.username == 'admin' %}
+            <a href="{{ url_for('create_competition') }}">Create competition</a>
+            {% endif %}
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
             {% else %}

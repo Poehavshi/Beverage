@@ -7,9 +7,10 @@
         {% for competition in competitions %}
         <div>
                 <p>
-                        <h3>{{ competition.name }} </h3>
+                        <h3> {{ competition.name }} </h3>
                         {{ competition.description }} <br>
                         Начало: {{competition.start_date}} Конец: {{competition.end_date}}
+                        <a href="{{ url_for('create_application', competition_id=competition.id) }}">Зарегистрироваться</a>
                 </p>
                 <hr>
         </div>
@@ -20,8 +21,13 @@
         <div>
                 <p> 
                         <h3>{{ application.author.username }}</h3> 
-                        {{ application.description }}
+                        Название соревнования: {{ application.competition.name }} <br>
+                        Описание заявки: {{ application.description }} <br>
+                        Оценка заявки: {{ application.rating}} 
                 </p>
+                {% if current_user.username == 'admin' %}
+                <a href="{{ url_for('edit_application', application_id=application.id) }}"> Изменить заявку </a>
+                {% endif %}
                 <hr>
         </div>
         {% endfor %}

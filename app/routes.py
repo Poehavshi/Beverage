@@ -3,7 +3,7 @@
 '''
 from app import app
 from flask import render_template, flash, redirect, url_for, request
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, СreateApplicationForm, EditApplicationForm
 from flask_login import current_user, login_user, login_required, logout_user
 from app.models import Participant, Competition, Application
 from werkzeug.urls import url_parse
@@ -14,22 +14,9 @@ from app import db
 @login_required
 def index():
     '''
-    Главная страница приложения со списком всех заявок
+    Главная страница приложения со списком всех соревнований
     '''
-    # applications = [
-    #     {
-    #         'author': {'name': 'John', 'surname': 'Johness'},
-    #         'description': 'Beautiful day in Portland!'
-    #     },
-    #     {
-    #         'author': {'name': 'Susan', 'surname': 'Susanness'},
-    #         'description': 'The Avengers movie was so cool!'
-    #     }, 
-    #     {
-    #         'author': {'name': 'Ипполит', 'surname': 'Ипполитович'},
-    #         'description': 'Какая гадость эта ваша заливная рыба!!'
-    #     }
-    # ]
+
     applications = Application.query.all()
     competitions = Competition.query.all()
     return render_template('index.html', 
@@ -92,3 +79,55 @@ def profile(username):
     user = Participant.query.filter_by(username=username).first_or_404()
     applications = Application.query.filter_by(participant_id=user.id)
     return render_template('profile.html', user=user, applications = applications)
+
+@app.route('/application/<competition_id>',methods=['GET', 'POST'])
+@login_required
+def create_application(competition_id):
+    '''
+    Страница создания заявки на соревнование
+    '''
+    form = СreateApplicationForm()
+    if form.validate_on_submit():
+        application = Application.query.filter_by(competition_id=competition_id, participant_id = current_user.id).first()
+        if application is not None:
+            flash('Вы уже зарегистрированы на это соревнование')
+            return redirect(url_for('index'))
+        else:
+            application = Application(description=form.description.data, participant_id = current_user.id, competition_id = int(competition_id))
+            db.session.add(application)
+            db.session.commit()
+            flash('Поздравляем, вы зарегистрированы на соревнование!')
+            return redirect(url_for('index'))
+        
+    return render_template('create_application.html',
+                            title='Create application',
+                            competition_id = competition_id,
+                            form = form)
+
+@app.route('/edit_application/<application_id>', methods=['GET', 'POST'])
+@login_required
+def edit_application(application_id):
+    if current_user.username == 'admin':
+        form = EditApplicationForm()
+        application = Application.query.filter_by(id = application_id).first_or_404()
+        if form.validate_on_submit():
+            application.description = form.description.data
+            application.rating = form.rating.data
+            db.session.commit()
+            flash('Your changes have been saved.')
+            return redirect(url_for('index'))
+        elif request.method == 'GET':
+            form.description.data = application.description
+            form.rating.data = application.rating
+        return render_template('edit_application.html', title='Edit application',
+                            form=form)
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/create_competition', methods=['GET', 'POST'])
+@login_required
+def create_competition():
+    if current_user.username == 'admin':
+        return render_template('create_competition.html', title='Create competition')
+    else:
+        return redirect(url_for('index'))

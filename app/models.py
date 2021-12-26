@@ -68,6 +68,7 @@ class Application(db.Model):
     description = db.Column(db.String(256)) # Описание соревнования
     rating = db.Column(db.Integer, default = 0) # Выставленные баллы за заявку
 
+
     participant_id = db.Column(db.Integer, db.ForeignKey('participant.id'))
     competition_id = db.Column(db.Integer, db.ForeignKey('competition.id'))
 

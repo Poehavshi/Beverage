@@ -3,9 +3,22 @@
 В первую очередь для формы логина
 '''
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, ValidationError, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField
+from wtforms.validators import DataRequired, ValidationError, EqualTo, Length
 from app.models import Participant
+
+class СreateApplicationForm(FlaskForm):
+    '''
+    Форма регистрации заявки на соревнование
+    '''
+    description = TextAreaField('Расскажите почему хотите участвовать в соревновании', validators=[DataRequired(),Length(min=0, max=500)])
+    
+    submit = SubmitField('Create')
+
+class EditApplicationForm(FlaskForm):
+    description = TextAreaField('Описание заявки:', validators=[Length(min=0, max=500)])
+    rating = IntegerField('Рейтинг заявки:')
+    submit = SubmitField('Submit')
 
 class LoginForm(FlaskForm):
     '''
@@ -30,7 +43,7 @@ class RegistrationForm(FlaskForm):
     surname = StringField('Surname', validators=[DataRequired()])
     patronymic = StringField('Patronymic', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
-    description = StringField('Description', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[Length(min=0, max=140),DataRequired()])
     gender = BooleanField('Male')
     
     submit = SubmitField('Register')
@@ -39,3 +52,4 @@ class RegistrationForm(FlaskForm):
         user = Participant.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
+
