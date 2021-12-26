@@ -9,7 +9,6 @@ from app import login
 class Participant(db.Model, UserMixin):
     '''
     Сущность участника
-    содержит всю необходимую о нем информацию
     '''
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64)) # Имя
@@ -34,11 +33,11 @@ class Participant(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
 @login.user_loader
-def load_user(id):
+def load_user(user_id):
     '''
     Пользовательский загрузчик пользователя
     '''
-    return Participant.query.get(int(id))
+    return Participant.query.get(int(user_id))
 
 class Competition(db.Model):
     '''
