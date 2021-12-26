@@ -4,6 +4,7 @@
 from app import app
 from flask import render_template, flash, redirect, url_for, request
 from app.forms import LoginForm, RegistrationForm, СreateApplicationForm, EditApplicationForm
+from app.forms import CreateCompetitionForm
 from flask_login import current_user, login_user, login_required, logout_user
 from app.models import Participant, Competition, Application
 from werkzeug.urls import url_parse
@@ -16,7 +17,6 @@ def index():
     '''
     Главная страница приложения со списком всех соревнований
     '''
-
     applications = Application.query.all()
     competitions = Competition.query.all()
     return render_template('index.html', 
@@ -128,6 +128,18 @@ def edit_application(application_id):
 @login_required
 def create_competition():
     if current_user.username == 'admin':
-        return render_template('create_competition.html', title='Create competition')
+        form = CreateCompetitionForm()
+        if form.validate_on_submit():
+            competition = Competition(name=form.name.data,
+                                    description=form.description.data, 
+                                    city = form.city.data,
+                                    start_date = form.start_date.data,
+                                    end_date = form.end_date.data 
+                                    )
+            db.session.add(competition)
+            db.session.commit()
+            flash('Поздравляем, вы создали соревнование!')
+            return redirect(url_for('index'))
+        return render_template('create_competition.html', title='Create competition', form = form)
     else:
         return redirect(url_for('index'))
