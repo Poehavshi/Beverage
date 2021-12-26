@@ -2,8 +2,11 @@
 Файл с классами-сущностями из базы данных
 '''
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from app import login
 
-class Participant(db.Model):
+class Participant(db.Model, UserMixin):
     '''
     Сущность участника
     содержит всю необходимую о нем информацию
@@ -23,6 +26,19 @@ class Participant(db.Model):
 
     def __repr__(self):
         return f'<Participant {self.username}>'
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+@login.user_loader
+def load_user(id):
+    '''
+    Пользовательский загрузчик пользователя
+    '''
+    return Participant.query.get(int(id))
 
 class Competition(db.Model):
     '''
@@ -57,3 +73,4 @@ class Application(db.Model):
 
     def __repr__(self):
         return f'<Application {self.id}>' 
+

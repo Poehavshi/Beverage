@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <h1>Здравствуй, {{ user.name }} {{user.surname}}!</h1>
+        <h1>Здравствуй, {{ current_user.name }} {{current_user.surname}}!</h1>
         {% for application in applications %}
-        <div><p>{{ application.author.name }} says: <b>{{ application.description }}</b></p></div>
+        <div><p>{{ application.author.username }} says: <b>{{ application.description }}</b></p></div>
         {% endfor %}
 {% endblock %}
