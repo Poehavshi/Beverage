@@ -2,7 +2,29 @@
 
 {% block content %}
         <h1>Здравствуй, {{ current_user.name }} {{current_user.surname}}!</h1>
-        {% for application in applications %}
-        <div><p>{{ application.author.username }} says: <b>{{ application.description }}</b></p></div>
+
+        <h2>Список соревнований:</h2>
+        {% for competition in competitions %}
+        <div>
+                <p>
+                        <h3>{{ competition.name }} </h3>
+                        {{ competition.description }} <br>
+                        Начало: {{competition.start_date}} Конец: {{competition.end_date}}
+                </p>
+                <hr>
+        </div>
         {% endfor %}
+
+        <h2>Все заявки:</h2>
+        {% for application in applications %}
+        <div>
+                <p> 
+                        <h3>{{ application.author.username }}</h3> 
+                        {{ application.description }}
+                </p>
+                <hr>
+        </div>
+        {% endfor %}
+
+        
 {% endblock %}

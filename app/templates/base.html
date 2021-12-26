@@ -8,8 +8,11 @@
     </head>
     <body>
         <div>
-            Beverage:
+            <h1>Beverage:</h1>
             <a href="{{ url_for('index') }}">Home</a>
+            {% if not current_user.is_anonymous %}
+            <a href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+            {% endif %}
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
             {% else %}

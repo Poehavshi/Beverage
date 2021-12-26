@@ -5,7 +5,7 @@ from app import app
 from flask import render_template, flash, redirect, url_for, request
 from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, login_required, logout_user
-from app.models import Participant
+from app.models import Participant, Competition, Application
 from werkzeug.urls import url_parse
 from app import db
 
@@ -16,21 +16,26 @@ def index():
     '''
     Главная страница приложения со списком всех заявок
     '''
-    applications = [
-        {
-            'author': {'name': 'John', 'surname': 'Johness'},
-            'description': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'name': 'Susan', 'surname': 'Susanness'},
-            'description': 'The Avengers movie was so cool!'
-        }, 
-        {
-            'author': {'name': 'Ипполит', 'surname': 'Ипполитович'},
-            'description': 'Какая гадость эта ваша заливная рыба!!'
-        }
-    ]
-    return render_template('index.html', title='Home', applications = applications)
+    # applications = [
+    #     {
+    #         'author': {'name': 'John', 'surname': 'Johness'},
+    #         'description': 'Beautiful day in Portland!'
+    #     },
+    #     {
+    #         'author': {'name': 'Susan', 'surname': 'Susanness'},
+    #         'description': 'The Avengers movie was so cool!'
+    #     }, 
+    #     {
+    #         'author': {'name': 'Ипполит', 'surname': 'Ипполитович'},
+    #         'description': 'Какая гадость эта ваша заливная рыба!!'
+    #     }
+    # ]
+    applications = Application.query.all()
+    competitions = Competition.query.all()
+    return render_template('index.html', 
+                            title='Home', 
+                            applications = applications,
+                            competitions = competitions)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -80,3 +85,10 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/profile/<username>')
+@login_required
+def profile(username):
+    user = Participant.query.filter_by(username=username).first_or_404()
+    applications = Application.query.filter_by(participant_id=user.id)
+    return render_template('profile.html', user=user, applications = applications)

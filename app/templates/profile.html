@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Участник: {{ user.username }}</h1>
+    <hr>
+    {% for application in applications %}
+    <div>
+            <p> 
+                    <h3>{{ application.author.username }}</h3> 
+                    {{ application.description }}
+            </p>
+            <hr>
+    </div>
+    {% endfor %}
+
+{% endblock %}
