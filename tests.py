@@ -49,6 +49,17 @@ class TestCase(unittest.TestCase):
         user = Participant.query.first()
 
         assert user.name == 'user'
-        
+            
+    #test loading index page
+    def test_index(self):
+        tester = app.test_client(self)
+        response = tester.get('/login', content_type='html/text')
+        self.assertEqual(response.status_code, 200)
+
+    #test login page loads correctly
+    def test_login_page_loads(self):
+        tester = app.test_client(self)
+        response = tester.get('/login', content_type='html/text')
+        self.assertTrue(u'Login' in response.data)
 if __name__ == '__main__':
     unittest.main()
