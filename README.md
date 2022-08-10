@@ -1,2 +1,2 @@
 # Beverage
-Веб-приложение для формирования и просмотра заявок на различные конкурсы
+CRUD Flask web-application to apply for competitions 
